@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 flask = "*"
+python-dotenv = "*"
+transitions = "*"
+line-bot-sdk = "*"
+graphviz = "*"
+pygraphviz = "*"
 
 [dev-packages]
 
