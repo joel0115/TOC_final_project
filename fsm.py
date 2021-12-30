@@ -7,7 +7,9 @@ def create_machine():
     machine = TocMachine(
         states=["user", "menu", "apply_document",
                 "school_transfer", "grade_report", "english_report", "chinese_report", "both_report",
-                "student_status", "chinese_graduate_certificate", "change_profile", "reissue_student_id_card"],
+                "student_status", "chinese_graduate_certificate", "change_profile", "reissue_student_id_card",
+                "register_question", "in_school_district", "not_qualified", "graduate_in_taipei", "graduate_outside",
+                "additional_quota", "change_distribution", "first_pick", "determine_second_or_third", "second_pick", "third_pick"],
         transitions=[
             {
                 "trigger": "advance",
@@ -77,11 +79,79 @@ def create_machine():
                 "conditions": "is_going_to_reissue_student_id_card",
             },
             {
+                "trigger": "advance",
+                "source": "menu",
+                "dest": "register_question",
+                "conditions": "is_going_to_register_question",
+            },
+            {
+                "trigger": "advance",
+                "source": "register_question",
+                "dest": "in_school_district",
+                "conditions": "is_going_to_in_school_district",
+            },
+            {
+                "trigger": "advance",
+                "source": "register_question",
+                "dest": "not_qualified",
+                "conditions": "is_going_to_not_qualified",
+            },
+            {
+                "trigger": "advance",
+                "source": "in_school_district",
+                "dest": "graduate_in_taipei",
+                "conditions": "is_going_to_graduate_in_taipei",
+            },
+            {
+                "trigger": "advance",
+                "source": "in_school_district",
+                "dest": "graduate_outside",
+                "conditions": "is_going_to_graduate_outside",
+            },
+            {
+                "trigger": "advance",
+                "source": "graduate_outside",
+                "dest": "additional_quota",
+                "conditions": "is_going_to_additional_quota",
+            },
+            {
+                "trigger": "advance",
+                "source": "graduate_outside",
+                "dest": "change_distribution",
+                "conditions": "is_going_to_change_distribution",
+            },
+            {
+                "trigger": "advance",
+                "source": "graduate_in_taipei",
+                "dest": "first_pick",
+                "conditions": "is_going_to_first_pick",
+            },
+            {
+                "trigger": "advance",
+                "source": "graduate_in_taipei",
+                "dest": "determine_second_or_third",
+                "conditions": "is_going_to_determine_second_or_third",
+            },
+            {
+                "trigger": "advance",
+                "source": "determine_second_or_third",
+                "dest": "second_pick",
+                "conditions": "is_going_to_second_pick",
+            },
+            {
+                "trigger": "advance",
+                "source": "determine_second_or_third",
+                "dest": "third_pick",
+                "conditions": "is_going_to_third_pick",
+            },
+            {
                 "trigger": "go_back",
                 "source":
                 ["school_transfer", "english_report",
                  "chinese_report", "both_report", "student_status", "chinese_graduate_certificate", "change_profile",
-                 "reissue_student_id_card"],
+                 "reissue_student_id_card",
+                 "not_qualified", "additional_quota", "change_distribution",
+                 "first_pick", "second_pick", "third_pick"],
                 "dest": "menu"
             },
         ],
@@ -140,6 +210,50 @@ class TocMachine(GraphMachine):
     def is_going_to_reissue_student_id_card(self, event):
         text = event.message.text
         return text == "補辦數位學生證"
+
+    def is_going_to_register_question(self, event):
+        text = event.message.text
+        return text == "設籍問題"
+
+    def is_going_to_in_school_district(self, event):
+        text = event.message.text
+        return text == "是"
+
+    def is_going_to_not_qualified(self, event):
+        text = event.message.text
+        return text == "否"
+
+    def is_going_to_graduate_in_taipei(self, event):
+        text = event.message.text
+        return text == "是"
+
+    def is_going_to_graduate_outside(self, event):
+        text = event.message.text
+        return text == "否"
+
+    def is_going_to_additional_quota(self, event):
+        text = event.message.text
+        return text == "是"
+
+    def is_going_to_change_distribution(self, event):
+        text = event.message.text
+        return text == "否"
+
+    def is_going_to_first_pick(self, event):
+        text = event.message.text
+        return text == "是"
+
+    def is_going_to_determine_second_or_third(self, event):
+        text = event.message.text
+        return text == "否"
+
+    def is_going_to_second_pick(self, event):
+        text = event.message.text
+        return text == "第二順位"
+
+    def is_going_to_third_pick(self, event):
+        text = event.message.text
+        return text == "第三順位"
 
     def on_enter_menu(self, event):
         send_flex_message(event.source.user_id,
@@ -262,4 +376,109 @@ class TocMachine(GraphMachine):
         push_text_message(event.source.user_id, step)
         msg = """感謝您使用本服務，即將回到主選單！"""
         push_text_message(event.source.user_id, msg)
+        self.go_back(event)
+
+    def on_enter_register_question(self, event):
+        push_text_message(event.source.user_id, "以下為符合敦化國中學區的里別：")
+        # 列出學區
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["register_question"])
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["in_area_or_not"])
+
+    def on_enter_in_school_district(self, event):
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["in_taipei_or_not"])
+
+    def on_enter_not_qualified(self, event):
+        push_text_message(event.source.user_id, "您不符合入學資格！")
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
+        self.go_back(event)
+
+    def on_enter_graduate_in_taipei(self, event):
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["graduate_in_taipei"])
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["have_house_or_not"])
+
+    def on_enter_graduate_outside(self, event):
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["graduate_in_taipei"])
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["have_house_or_not"])
+
+    def on_enter_additional_quota(self, event):
+        push_text_message(event.source.user_id, "您將以 外加名額 的分發方式入學！")
+        push_text_message(event.source.user_id,
+                          ("請在教育局規定的時間內(約七月份)至註冊組進行審查\n"
+                           "並且備妥資料：\n\n"
+                           "1. 有權狀(所有權人為直系二等親)：\n"
+                           "  1)七月份戶籍謄本(全戶於前一年12月31日前設籍)\n"
+                           "  2)當年1-7月任一月份之水費或電費收據正影本\n"
+                           "  3)權狀正影本(於前一年12月31日前登記)\n"
+                           "  4)國民小學畢業證書\n"
+                           "  5)家長印章\n\n"
+
+                           "2. 租屋：\n"
+                           "  1)七月份戶籍謄本(全戶須設籍6年以上)\n"
+                           "  2)當年1-7月任一月份之水費或電費收據正影本\n"
+                           "  3)經公證之房屋租賃證明(6年以上)\n"
+                           "  4)國民小學畢業證書\n"
+                           "  5)家長印章\n"
+                           ))
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
+        self.go_back(event)
+
+    def on_enter_change_distribution(self, event):
+        push_text_message(event.source.user_id,
+                          ("您不符合入學資格，將改分發入學。\n"
+                           "額滿學校會由教育部指定改分發學校，今年的選擇為：\n"
+                           "長安、五常、民生國中\n"
+                           "可自行選擇要改分發至哪所學校。"))
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
+        self.go_back(event)
+
+    def on_enter_first_pick(self, event):
+        push_text_message(event.source.user_id, "您的分發結果為 第一順位 ！")
+        push_text_message(event.source.user_id,
+                          ("請在教育局規定的時間內(約五月份)至註冊組進行複審\n"
+                           "並且備妥資料：\n\n"
+                           "1. 有權狀(所有權人為直系二等親)：\n"
+                           "  1)五月份戶籍謄本(全戶於前一年12月31日前設籍)\n"
+                           "  2)當年1-5月任一月份之水費或電費收據正影本\n"
+                           "  3)權狀正影本(於前一年12月31日前登記)\n\n"
+
+                           "2. 租屋：\n"
+                           "  1)五月份戶籍謄本(全戶須設籍6年以上)\n"
+                           "  2)當年1-5月任一月份之水費或電費收據正影本\n"
+                           "  3)經公證之房屋租賃證明(6年以上)\n"
+                           ))
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
+        self.go_back(event)
+
+    def on_enter_determine_second_or_third(self, event):
+        push_text_message(event.source.user_id, "請問您符合以下何種情況？")
+        send_flex_message(event.source.user_id,
+                          flex_message_contents["determine_second_or_third"])
+
+    def on_enter_second_pick(self, event):
+        push_text_message(event.source.user_id, "您的分發結果為 第二順位 ！")
+        push_text_message(event.source.user_id,
+                          ("若 第一順位 之學生分發完後仍有缺額，\n"
+                           "則由 第二順位 之學生 依照 「學生設籍時間」 順序排序\n\n"
+                           "若名額已滿，請家長上網填寫改分發志願至鄰近國中就讀。\n"
+                           "今年改分發學校為：\n"
+                           "長安、五常、民生國中"))
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
+        self.go_back(event)
+
+    def on_enter_third_pick(self, event):
+        push_text_message(event.source.user_id, "您的分發結果為 第三順位 ！")
+        push_text_message(event.source.user_id,
+                          ("若 第一順位及第二順位 之學生分發完後仍有缺額，\n"
+                           "則由 第三順位 之學生 依照 「學生設籍時間」 順序排序\n\n"
+                           "若名額已滿，請家長上網填寫改分發志願至鄰近國中就讀。\n"
+                           "今年改分發學校為：\n"
+                           "長安、五常、民生國中"))
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
         self.go_back(event)
