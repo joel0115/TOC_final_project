@@ -1,7 +1,10 @@
 import os
-
+import requests
+from bs4 import BeautifulSoup
 from linebot import LineBotApi, WebhookParser
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
+
+LATEST_NEWS_URL = "https://www.doe.gov.taipei/News.aspx?n=6948C3CBF6631855&sms=69B4E6B26379EE4E"
 
 flex_message_contents = {
     "menu": {
@@ -39,15 +42,15 @@ flex_message_contents = {
                             "label": "證明文件申請流程",
                             "text": "證明文件申請流程"
                         }
-                },
+                        },
                 {
                         "type": "button",
                         "action": {
                             "type": "message",
-                            "label": "查看最新公告",
-                            "text": "查看最新公告"
+                            "label": "查看教育局最新公告",
+                            "text": "查看教育局最新公告"
                         }
-                }
+                        }
             ]
         }
     },
@@ -86,7 +89,7 @@ flex_message_contents = {
                             "label": "成績證明",
                             "text": "成績證明"
                         }
-                },
+                        },
                 {
                         "type": "button",
                         "action": {
@@ -94,7 +97,7 @@ flex_message_contents = {
                             "label": "在學證明書",
                             "text": "在學證明書"
                         }
-                },
+                        },
                 {
                         "type": "button",
                         "action": {
@@ -102,7 +105,7 @@ flex_message_contents = {
                             "label": "中文畢業證明書",
                             "text": "中文畢業證明書"
                         }
-                },
+                        },
                 {
                         "type": "button",
                         "action": {
@@ -110,7 +113,7 @@ flex_message_contents = {
                             "label": "補辦數位學生證",
                             "text": "補辦數位學生證"
                         }
-                },
+                        },
                 {
                         "type": "button",
                         "action": {
@@ -118,7 +121,7 @@ flex_message_contents = {
                             "label": "個資異動（姓名或身分證字號）",
                             "text": "個資異動"
                         }
-                }
+                        }
             ]
         }
     },
@@ -157,7 +160,7 @@ flex_message_contents = {
                             "label": "英文成績證明書",
                             "text": "英文成績證明書"
                         }
-                },
+                        },
                 {
                         "type": "button",
                         "action": {
@@ -165,7 +168,7 @@ flex_message_contents = {
                             "label": "以上皆是",
                             "text": "以上皆是"
                         }
-                }
+                        }
             ]
         }
     },
@@ -648,6 +651,71 @@ def send_flex_message(id, content):
     line_bot_api = LineBotApi(channel_access_token)
     line_bot_api.push_message(id, FlexSendMessage(
         alt_text="Error happened when sending flex message.", contents=content))
+
+
+def send_latest_news(id):
+    r = requests.get(LATEST_NEWS_URL)
+
+    soup = BeautifulSoup(r.content, "html.parser")
+
+    td_tags = soup.find_all(
+        "td", class_="CCMS_jGridView_td_Class_1", limit=5)
+
+    a_tags = []
+    for td_tag in td_tags:
+        a_tags.append(td_tag.find("a"))
+
+    latest_news = {}
+    for a_tag in a_tags:
+        latest_news[a_tag.get("title")] = a_tag.get("href")
+
+    content = {
+        "type": "bubble",
+        "header": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": "最新消息",
+                    "size": "xl",
+                    "align": "center"
+                }
+            ]
+        },
+        "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+
+            ]
+        },
+        "styles": {
+            "header": {
+                "backgroundColor": "#b6fc03"
+            }
+        }
+    }
+    for (title, href) in latest_news.items():
+        if "Download" in href:
+            uri = "https://www-ws.gov.taipei/" + href
+        else:
+            uri = "https://www.doe.gov.taipei/" + href
+        tmp = {
+            "type": "text",
+            "text": title,
+            "action": {
+                "type": "uri",
+                "label": "action",
+                "uri": uri
+            },
+            "wrap": True,
+            "decoration": "underline",
+            "margin": "md",
+            "color": "#0000FF"
+        }
+        content["body"]["contents"].append(tmp)
+    send_flex_message(id, content=content)
 
 
 """

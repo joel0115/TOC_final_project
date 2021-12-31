@@ -1,6 +1,6 @@
 from transitions.extensions import GraphMachine
 
-from utils import push_text_message, send_flex_message, send_text_message, flex_message_contents
+from utils import push_text_message, send_flex_message, send_latest_news, send_text_message, flex_message_contents
 
 
 def create_machine():
@@ -9,7 +9,8 @@ def create_machine():
                 "school_transfer", "grade_report", "english_report", "chinese_report", "both_report",
                 "student_status", "chinese_graduate_certificate", "change_profile", "reissue_student_id_card",
                 "register_question", "in_school_district", "not_qualified", "graduate_in_taipei", "graduate_outside",
-                "additional_quota", "change_distribution", "first_pick", "determine_second_or_third", "second_pick", "third_pick"],
+                "additional_quota", "change_distribution", "first_pick", "determine_second_or_third", "second_pick", "third_pick",
+                "latest_news"],
         transitions=[
             {
                 "trigger": "advance",
@@ -20,10 +21,15 @@ def create_machine():
             {
                 "trigger": "advance",
                 "source": "menu",
+                "dest": "latest_news",
+                "conditions": "is_going_to_latest_news",
+            },
+            {
+                "trigger": "advance",
+                "source": "menu",
                 "dest": "apply_document",
                 "conditions": "is_going_to_apply_document",
             },
-
             {
                 "trigger": "advance",
                 "source": "apply_document",
@@ -151,7 +157,7 @@ def create_machine():
                  "chinese_report", "both_report", "student_status", "chinese_graduate_certificate", "change_profile",
                  "reissue_student_id_card",
                  "not_qualified", "additional_quota", "change_distribution",
-                 "first_pick", "second_pick", "third_pick"],
+                 "first_pick", "second_pick", "third_pick", "latest_news"],
                 "dest": "menu"
             },
         ],
@@ -254,6 +260,10 @@ class TocMachine(GraphMachine):
     def is_going_to_third_pick(self, event):
         text = event.message.text
         return text == "第三順位"
+
+    def is_going_to_latest_news(self, event):
+        text = event.message.text
+        return text == "查看教育局最新公告"
 
     def on_enter_menu(self, event):
         send_flex_message(event.source.user_id,
@@ -480,5 +490,10 @@ class TocMachine(GraphMachine):
                            "若名額已滿，請家長上網填寫改分發志願至鄰近國中就讀。\n"
                            "今年改分發學校為：\n"
                            "長安、五常、民生國中"))
+        push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
+        self.go_back(event)
+
+    def on_enter_latest_news(self, event):
+        send_latest_news(event.source.user_id)
         push_text_message(event.source.user_id, "感謝您使用本服務，即將回到主選單！")
         self.go_back(event)
