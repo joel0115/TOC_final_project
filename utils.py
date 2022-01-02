@@ -697,9 +697,7 @@ def send_latest_news(id):
         }
     }
     for (title, href) in latest_news.items():
-        if "Download" in href:
-            uri = "https://www-ws.gov.taipei/" + href
-        else:
+        if "Download" not in href:
             uri = "https://www.doe.gov.taipei/" + href
         tmp = {
             "type": "text",
