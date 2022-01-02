@@ -34,6 +34,15 @@ author F74082010 資訊系112級 陳昭穎
 
     讓家長可以不用在教育局的茫茫大海中找尋對新生有用的資訊！
 
+## 使用到的技術
+
+1. line bot
+2. Beautifulsoup4
+
+    爬取教育局的最新公告
+3. heroku
+
+    讓line bot可以運行在免費的平台上，而不需要使用自己的電腦一直開著server！
 ## FSM 架構圖
 以下為利用 GraphMachine 功能印出來的圖片
 ![fsm](https://user-images.githubusercontent.com/71745723/147857940-9dbbff96-89de-4677-a3a3-474c9808c0ee.png)
