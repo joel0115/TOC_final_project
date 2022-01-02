@@ -73,11 +73,68 @@ menu: 輸出功能選單，可以選擇查詢 設籍問題、證明文件申請�
 ## DEMO
 
 ### 設籍問題
-因為入學資格有分第一、二、三順位，把判斷流程全部展示出來的話會有一點點冗長，
 
-因此只示範第一順位的情況，於現場 DEMO 時會展示得更加仔細！
+#### 第一順位
 
+![Screenshot_2022-01-02-02-59-18-385_jp naver line android](https://user-images.githubusercontent.com/71745723/147874423-53909bb4-da59-4430-8dc5-b0377696d0c9.png)
+---
+
+#### 第二順位
+
+![Screenshot_2022-01-02-19-34-18-726_jp naver line android](https://user-images.githubusercontent.com/71745723/147874521-d1ca6a0e-8b10-44bc-adf9-9dff23a493b4.png)
+---
+
+#### 第三順位
+
+![Screenshot_2022-01-02-19-35-07-380_jp naver line android](https://user-images.githubusercontent.com/71745723/147874515-97c6d855-5f5d-4df7-a64a-ea4d7120370d.png)
+
+---
+#### 外加名額
+
+![Screenshot_2022-01-02-19-45-51-860_jp naver line android](https://user-images.githubusercontent.com/71745723/147874785-a9923143-f228-4618-b672-53b07b099bc5.png)
+
+---
+
+#### 資格不符
+
+![Screenshot_2022-01-02-19-45-16-614_jp naver line android](https://user-images.githubusercontent.com/71745723/147874779-a94648d0-fca7-4f88-ab46-299956a4b85a.png)
+
+---
 
 ### 證明文件申請流程
 
+#### 學生轉出
+
+![Screenshot_2022-01-02-02-54-12-467_jp naver line android](https://user-images.githubusercontent.com/71745723/147874598-f24056db-bd1e-4ec3-ba25-08c89ef8ceb5.png)
+---
+
+#### 成績證明
+
+![Screenshot_2021-12-26-17-44-52-633_jp naver line android](https://user-images.githubusercontent.com/71745723/147874631-58b05fa5-d2ce-4828-8937-b2348bca3a29.png)
+---
+
+#### 在學證明書
+
+![Screenshot_2022-01-02-02-55-26-307_jp naver line android](https://user-images.githubusercontent.com/71745723/147874636-3913ce87-2b49-4615-a788-56e301afbb6a.png)
+---
+
+#### 中文畢業證明書
+
+![Screenshot_2022-01-02-02-55-49-691_jp naver line android](https://user-images.githubusercontent.com/71745723/147874643-97b2c158-7a8d-4e1c-ba4e-1380c2383138.png)
+
+---
+
+#### 補辦數位學生證
+
+![Screenshot_2022-01-02-02-56-14-160_jp naver line android](https://user-images.githubusercontent.com/71745723/147874648-a298a0c3-30fd-4d3a-91af-12dabcd18510.png)
+
+---
+
+#### 個資異動
+
+![Screenshot_2022-01-02-02-56-32-700_jp naver line android](https://user-images.githubusercontent.com/71745723/147874655-da4bc51c-5d81-459c-a900-f54ce49ea840.png)
+
+---
+
 ### 查看教育局最新公告
+![Screenshot_2022-01-02-02-56-50-206_jp naver line android](https://user-images.githubusercontent.com/71745723/147874577-d5eaac2f-d861-46f2-9bec-ba4c3b3e7c79.png)
