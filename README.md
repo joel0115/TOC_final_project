@@ -38,6 +38,38 @@ author F74082010 資訊系112級 陳昭穎
 以下為利用 GraphMachine 功能印出來的圖片
 ![fsm](https://user-images.githubusercontent.com/71745723/147857940-9dbbff96-89de-4677-a3a3-474c9808c0ee.png)
 
+### State 說明
+user: 最一開始加入 line bot 好友時進入的state，輸入 開始 或 start(大小寫沒關係) 即可進入到功能選單。
+
+menu: 輸出功能選單，可以選擇查詢 設籍問題、證明文件申請流程 或是 查看教育局最新公告。
+
+- apply_document: 輸出欲查詢的證明文件類別，供使用者選擇。
+    - school_transfer: 輸出申請 學生轉出 的流程。
+
+    - student_status: 輸出申請 在學證明書 的流程。
+
+    - grade_report: 輸出申請 成績證明 的選項。
+        - english_report: 輸出申請 英文成績證明 的流程。
+        - chinese_report: 輸出申請 中文成績證明 的流程。
+        - both_report: 輸出申請 中文及英文成績證明 的流程。
+    - chinese_graduate_certificate: 輸出申請 中文畢業證明書 的流程。
+    - change_profile: 輸出申請 個資異動 的流程
+    - reissue_student_id_card: 輸出 補辦數位學生證 的流程。
+
+- register_question: 輸出 符合敦化國中學區的里別，並且詢問是否設籍在其中的里。
+    - in_school_district: 使用者有設籍在學區內，接著詢問是否在 台北市 畢業。
+        - graduate_outside: 為外縣市畢業，接著詢問是否符合 自有房屋 或 租屋 的條件。
+            - additional_quota: 符合條件，以 外加名額 方式入學，並且輸出審查方式。
+            - change_distribution: 不符合條件，需要改分發，輸出改分發的學校選項。
+
+        - graduate_in_taipei: 在台北市畢業，接著詢問是否符合 自有房屋 或 租屋 的條件。
+            - first_pick: 符合條件，為 第一順位 的學生，輸出複審的時程和流程。
+            - determine_second_or_third: 不符合條件，詢問 父母與學生的設籍狀況。
+                - second_pick: 符合 父母與學生三人共同設籍，若為單親須與法定監護人設籍 的條件，因此為 第二順位，輸出分發的規則。
+                - third_pick: 符合 父或母只有一位與學生共同設籍 的條件，因此為 第三順位，輸出分發的規則。 
+    - not_qualified: 因為不設籍在學區內，輸出 不符合資格 的相關訊息。
+
+- latest_news: 輸出 教育局中等教育科 的國中新生入學區最新的前五個公告 (利用爬蟲的方式取得)。
 ## DEMO
 
 ### 設籍問題
